@@ -60,3 +60,5 @@ These values balance tracking responsiveness with stability for typical network 
 ## Documentation
 
 See [docs/theory.md](docs/theory.md) for detailed mathematical documentation of the Kalman filter implementation and time synchronization protocol.
+
+[![A project from the Open Home Foundation](https://www.openhomefoundation.org/badges/ohf-project.png)](https://www.openhomefoundation.org/)
