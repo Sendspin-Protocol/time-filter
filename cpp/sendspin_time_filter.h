@@ -1,4 +1,4 @@
-// Copyright 2025 Resonate Contributors
+// Copyright 2025 Sendspin Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 ///
 /// All computations use double precision arithmetic to maintain microsecond-level accuracy over extended periods.
 /// Thread-safe access to the current time transformation is provided via std::mutex.
-class ResonateTimeFilter {
+class SendspinTimeFilter {
  public:
   /// @brief Constructs a Kalman filter for time synchronization.
   ///
@@ -42,7 +42,7 @@ class ResonateTimeFilter {
   ///                        When residual > adaptive_cutoff * max_error, forgetting is applied.
   /// @param min_samples Minimum number of samples before adaptive forgetting is enabled. Default 100.
   ///                    Building sufficient history before enabling forgetting improves stability.
-  ResonateTimeFilter(double process_std_dev, double drift_process_std_dev, double forget_factor,
+  SendspinTimeFilter(double process_std_dev, double drift_process_std_dev, double forget_factor,
                      double adaptive_cutoff = 0.75, uint8_t min_samples = 100);
 
   /// @brief Processes a new time synchronization measurement through the Kalman filter.

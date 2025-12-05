@@ -1,4 +1,4 @@
-# Resonate Time Filter
+# Sendspin Time Filter
 
 A Kalman filter-based time synchronization library for maintaining accurate client-server timestamp synchronization with microsecond-level precision.
 
@@ -25,7 +25,7 @@ This library implements a reference two-dimensional Kalman filter that tracks cl
 // forget_factor: Forgetting factor (>1) for recovery from disruptions
 // adaptive_cutoff: Fraction of max_error (0-1) that triggers forgetting (default: 0.75)
 // min_samples: Minimum samples before adaptive forgetting (default: 100)
-ResonateTimeFilter(double process_std_dev, double drift_process_std_dev,
+SendspinTimeFilter(double process_std_dev, double drift_process_std_dev,
                    double forget_factor, double adaptive_cutoff = 0.75,
                    uint8_t min_samples = 100);
 
@@ -48,7 +48,7 @@ int64_t get_error() const;
 Based on preliminary experiments, the following constructor parameters provide good synchronization performance:
 
 ```cpp
-ResonateTimeFilter filter(
+SendspinTimeFilter filter(
     0.01,    // process_std_dev: 0.01 µs offset noise
     0.0,     // drift_process_std_dev: 0.0 µs/s drift noise
     1.001    // forget_factor: 1.001 for adaptive forgetting
