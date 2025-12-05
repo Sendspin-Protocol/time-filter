@@ -1,4 +1,4 @@
-// Copyright 2025 Resonate Contributors
+// Copyright 2025 Sendspin Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "resonate_time_filter.h"
+#include "sendspin_time_filter.h"
 
 #include <cmath>
 #include <cstdint>
 #include <limits>
 #include <mutex>
 
-ResonateTimeFilter::ResonateTimeFilter(double process_std_dev, double drift_process_std_dev, double forget_factor,
+SendspinTimeFilter::SendspinTimeFilter(double process_std_dev, double drift_process_std_dev, double forget_factor,
                                        double adaptive_cutoff, uint8_t min_samples)
     : process_variance_(process_std_dev * process_std_dev),
       drift_process_variance_(drift_process_std_dev * drift_process_std_dev),
@@ -29,7 +29,7 @@ ResonateTimeFilter::ResonateTimeFilter(double process_std_dev, double drift_proc
   this->reset();
 }
 
-void ResonateTimeFilter::update(int64_t measurement, int64_t max_error, int64_t time_added) {
+void SendspinTimeFilter::update(int64_t measurement, int64_t max_error, int64_t time_added) {
   std::lock_guard<std::mutex> lock(this->state_mutex_);
 
   if (time_added <= this->last_update_) {
@@ -122,7 +122,7 @@ void ResonateTimeFilter::update(int64_t measurement, int64_t max_error, int64_t 
   this->offset_covariance_ = new_offset_covariance - offset_gain * new_offset_covariance;
 }
 
-int64_t ResonateTimeFilter::compute_server_time(int64_t client_time) const {
+int64_t SendspinTimeFilter::compute_server_time(int64_t client_time) const {
   // Transform: T_server = T_client + offset + drift * (T_client - T_last_update)
   // Compute instantaneous offset accounting for linear drift:
   // offset(t) = offset_base + drift * (t - t_last_update)
@@ -133,7 +133,7 @@ int64_t ResonateTimeFilter::compute_server_time(int64_t client_time) const {
   return client_time + offset;
 }
 
-int64_t ResonateTimeFilter::compute_client_time(int64_t server_time) const {
+int64_t SendspinTimeFilter::compute_client_time(int64_t server_time) const {
   // Inverse transform solving for T_client:
   // T_server = T_client + offset + drift * (T_client - T_last_update)
   // T_server = (1 + drift) * T_client + offset - drift * T_last_update
@@ -144,7 +144,7 @@ int64_t ResonateTimeFilter::compute_client_time(int64_t server_time) const {
                     (1.0 + this->drift_));
 }
 
-void ResonateTimeFilter::reset() {
+void SendspinTimeFilter::reset() {
   std::lock_guard<std::mutex> lock(this->state_mutex_);
   this->count_ = 0;
   this->offset_ = 0.0;
@@ -155,12 +155,12 @@ void ResonateTimeFilter::reset() {
   this->last_update_ = 0;
 }
 
-int64_t ResonateTimeFilter::get_error() const {
+int64_t SendspinTimeFilter::get_error() const {
   std::lock_guard<std::mutex> lock(this->state_mutex_);
   return std::round(sqrt(this->offset_covariance_));
 }
 
-int64_t ResonateTimeFilter::get_covariance() const {
+int64_t SendspinTimeFilter::get_covariance() const {
   std::lock_guard<std::mutex> lock(this->state_mutex_);
   return std::round(this->offset_covariance_);
 }
